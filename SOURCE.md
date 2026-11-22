@@ -35,3 +35,5 @@ A later phone CSS pass (22 November 2026, round 3) keeps the “Called away” s
 A later phone CSS pass (22 November 2026, round 4) tightens page and card side insets to ~8px from the screen edge on Home, Wheels and LEAPs, and keeps the Edit button visible on EXP trade rows.
 
 A later phone CSS pass (22 November 2026, round 5) keeps the wheel stepper sub-label inside the card at every stage (left-aligned on the first step, right-aligned on the last, centred otherwise).
+
+A later phone CSS and markup pass (22 November 2026, round 6) tidies the Home overview tiles: no outer card wrapper, a compact heading, a 2-column grid with Options P&L this month full width and the rest paired, sentence-case labels, and grey tile borders (orange only on Needs you when it has items).
