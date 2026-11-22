@@ -37,3 +37,5 @@ A later phone CSS pass (22 November 2026, round 4) tightens page and card side i
 A later phone CSS pass (22 November 2026, round 5) keeps the wheel stepper sub-label inside the card at every stage (left-aligned on the first step, right-aligned on the last, centred otherwise).
 
 A later phone CSS and markup pass (22 November 2026, round 6) tidies the Home overview tiles: no outer card wrapper, a compact heading, a 2-column grid with Options P&L this month full width and the rest paired, sentence-case labels, and grey tile borders (orange only on Needs you when it has items).
+
+A later phone CSS pass (22 November 2026, round 7) darkens the Home tile outlines a step and turns the outline orange on clickable tiles while hovered (mouse) or pressed (touch). Needs you stays orange when it has items.
