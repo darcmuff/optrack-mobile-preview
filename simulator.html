@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>OpTrack — phone preview</title>
+  <link rel="icon" href="favicon.ico">
+  <style>
+    :root { --bg:#1c1c1e; --panel:#2c2c2e; --line:#3a3a3c; --text:#f5f5f7; --muted:#a1a1a6; --accent:#0a84ff; }
+    * { box-sizing: border-box; }
+    html, body { height: 100%; margin: 0; background: var(--bg); color: var(--text); font: 13px/1.4 -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; }
+    body { display: flex; flex-direction: column; min-height: 100%; }
+    .toolbar {
+      flex: 0 0 auto;
+      display: flex; align-items: center; gap: .6rem; flex-wrap: wrap;
+      padding: .55rem .9rem;
+      background: #161617;
+      border-bottom: 1px solid var(--line);
+    }
+    .toolbar h1 { font-size: 13px; font-weight: 650; margin: 0 0.4rem 0 0; letter-spacing: -.01em; }
+    .toolbar .sp { flex: 1; }
+    .seg { display: inline-flex; background: var(--panel); border: 1px solid var(--line); border-radius: 8px; overflow: hidden; }
+    .seg button, .toolbar > button, .toggle {
+      appearance: none; border: 0; background: transparent; color: var(--text);
+      font: inherit; font-weight: 600; padding: .35rem .7rem; min-height: 32px; cursor: pointer;
+    }
+    .seg button[aria-pressed="true"] { background: #3a3a3c; }
+    .seg button:hover, .toolbar > button:hover, .toggle:hover { background: #3a3a3c; }
+    .toolbar > button, .toggle { border: 1px solid var(--line); background: var(--panel); border-radius: 8px; }
+    .hint { color: var(--muted); font-size: 11px; }
+    #stage { flex: 1 1 auto; position: relative; overflow: hidden; display: flex; align-items: center; justify-content: center; }
+    #phone {
+      position: absolute; top: 0; left: 0;
+      transform-origin: top left;
+      background: #0a0a0b;
+      border-radius: var(--radius);
+      padding: var(--bezel) var(--bezel) calc(var(--bezel) + var(--home-h));
+      box-shadow: 0 0 0 1px #3a3a3c, 0 18px 50px rgba(0,0,0,.45);
+      width: calc(var(--dw) * 1px + var(--bezel) * 2);
+    }
+    #phone[data-device="iphone-15"] { --bezel: 14px; --radius: 44px; --home-h: 20px; }
+    #phone[data-device="pixel-8"] { --bezel: 12px; --radius: 32px; --home-h: 16px; }
+    #phone[data-device="small"] { --bezel: 12px; --radius: 28px; --home-h: 16px; }
+    .status {
+      height: 28px; display: flex; align-items: center; justify-content: space-between;
+      padding: 0 18px 0 22px; color: #f5f5f7; font-size: 12px; font-weight: 650;
+      letter-spacing: .02em; user-select: none; pointer-events: none;
+    }
+    .status .icons { display: flex; align-items: center; gap: 6px; }
+    .island, .punch {
+      position: absolute; left: 50%; transform: translateX(-50%); background: #000; z-index: 2; pointer-events: none;
+    }
+    #phone[data-device="iphone-15"] .island {
+      top: calc(var(--bezel) + 6px); width: 94px; height: 28px; border-radius: 16px;
+    }
+    #phone[data-device="pixel-8"] .punch {
+      top: 6px; width: 10px; height: 10px; border-radius: 50%; background: #111; box-shadow: inset 0 0 0 2px #222;
+    }
+    #phone[data-device="small"] .island, #phone[data-device="small"] .punch,
+    #phone[data-device="pixel-8"] .island, #phone[data-device="iphone-15"] .punch { display: none; }
+    .screen {
+      width: calc(var(--dw) * 1px);
+      height: calc(var(--dh) * 1px);
+      background: #000;
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+    }
+    .screen iframe {
+      display: block; width: 100%; height: 100%; border: 0; background: #fff;
+    }
+    .home-ind {
+      position: absolute; left: 50%; bottom: 6px; transform: translateX(-50%);
+      width: 110px; height: 5px; border-radius: 3px; background: #f5f5f7; opacity: .85;
+      pointer-events: none;
+    }
+    #phone[data-device="pixel-8"] .home-ind, #phone[data-device="small"] .home-ind { width: 88px; height: 4px; opacity: .7; }
+  </style>
+</head>
+<body>
+  <div class="toolbar">
+    <h1>OpTrack phone preview</h1>
+    <div class="seg" role="group" aria-label="Device">
+      <button type="button" id="dev-iphone-15" aria-pressed="true">iPhone 15</button>
+      <button type="button" id="dev-pixel-8" aria-pressed="false">Pixel 8</button>
+      <button type="button" id="dev-small" aria-pressed="false">Small</button>
+    </div>
+    <button type="button" class="toggle" id="theme-btn" aria-pressed="false">Dark</button>
+    <button type="button" id="reload-btn">Reload</button>
+    <span class="sp"></span>
+    <span class="hint">Demo only · made-up trades · no account</span>
+  </div>
+  <div id="stage">
+    <div id="phone" data-device="iphone-15" style="--dw:390;--dh:844">
+      <div class="island" aria-hidden="true"></div>
+      <div class="punch" aria-hidden="true"></div>
+      <div class="status">
+        <span id="clock">00:00</span>
+        <span class="icons" aria-hidden="true">
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><rect x="0" y="8" width="2.2" height="4" rx=".4"/><rect x="3.3" y="5.5" width="2.2" height="6.5" rx=".4"/><rect x="6.6" y="3" width="2.2" height="9" rx=".4"/><rect x="9.9" y="0.5" width="2.2" height="11.5" rx=".4"/></svg>
+          <svg width="16" height="12" viewBox="0 0 16 12" fill="currentColor"><path d="M8 3.2c2.2 0 4.2.8 5.7 2.2l-1.1 1.1A6.3 6.3 0 0 0 8 4.8 6.3 6.3 0 0 0 3.4 6.5L2.3 5.4A8.7 8.7 0 0 1 8 3.2zm0 2.6a6 6 0 0 1 3.8 1.4L10.7 8.3A4.2 4.2 0 0 0 8 7.3 4.2 4.2 0 0 0 5.3 8.3L4.2 7.2A6 6 0 0 1 8 5.8zm0 2.6a3.2 3.2 0 0 1 1.8.6L8 10.8 6.2 9c.5-.4 1.1-.6 1.8-.6z"/></svg>
+          <svg width="25" height="12" viewBox="0 0 25 12" fill="currentColor"><rect x="0" y="1" width="21" height="10" rx="2.2" fill="none" stroke="currentColor" stroke-width="1.2"/><rect x="2" y="3" width="15" height="6" rx="1"/><rect x="21.5" y="4" width="1.6" height="4" rx=".6"/></svg>
+        </span>
+      </div>
+      <div class="screen">
+        <iframe id="frame" title="OpTrack demo" src="demo" allow="clipboard-read; clipboard-write"></iframe>
+      </div>
+      <div class="home-ind" aria-hidden="true"></div>
+    </div>
+  </div>
+  <script>
+    (function () {
+      var DEVICES = {
+        'iphone-15': { w: 390, h: 844 },
+        'pixel-8': { w: 412, h: 915 },
+        'small': { w: 360, h: 780 }
+      };
+      var phone = document.getElementById('phone');
+      var frame = document.getElementById('frame');
+      var themeBtn = document.getElementById('theme-btn');
+      var device = 'iphone-15';
+      var dark = false;
+
+      function tick() {
+        var parts = new Intl.DateTimeFormat('en-GB', { timeZone: 'Europe/London', hour: '2-digit', minute: '2-digit', hour12: false }).formatToParts(new Date());
+        var h = '', m = '';
+        parts.forEach(function (p) { if (p.type === 'hour') h = p.value; if (p.type === 'minute') m = p.value; });
+        document.getElementById('clock').textContent = h + ':' + m;
+      }
+      tick();
+      setInterval(tick, 15000);
+
+      function fit() {
+        var stage = document.getElementById('stage');
+        var sw = stage.clientWidth;
+        var sh = stage.clientHeight;
+        var pw = phone.offsetWidth;
+        var ph = phone.offsetHeight;
+        var scale = Math.min(1, (sw - 16) / pw, (sh - 16) / ph);
+        var x = Math.max(0, (sw - pw * scale) / 2);
+        var y = Math.max(0, (sh - ph * scale) / 2);
+        phone.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + scale + ')';
+      }
+
+      function setDevice(id) {
+        if (!DEVICES[id]) return;
+        device = id;
+        var d = DEVICES[id];
+        phone.dataset.device = id;
+        phone.style.setProperty('--dw', d.w);
+        phone.style.setProperty('--dh', d.h);
+        Object.keys(DEVICES).forEach(function (k) {
+          var btn = document.getElementById('dev-' + k);
+          if (btn) btn.setAttribute('aria-pressed', k === id ? 'true' : 'false');
+        });
+        requestAnimationFrame(fit);
+      }
+
+      function applyTheme() {
+        try {
+          var w = frame.contentWindow;
+          if (!w) return;
+          if (typeof w.toggleTheme === 'function') w.toggleTheme(!dark);
+          else {
+            var root = w.document && w.document.documentElement;
+            if (!root) return;
+            if (dark) root.setAttribute('data-theme', 'dark');
+            else root.removeAttribute('data-theme');
+          }
+        } catch (e) {}
+        themeBtn.setAttribute('aria-pressed', dark ? 'true' : 'false');
+        themeBtn.textContent = dark ? 'Light' : 'Dark';
+      }
+
+      document.querySelectorAll('.seg button').forEach(function (btn) {
+        btn.addEventListener('click', function () { setDevice(btn.id.replace(/^dev-/, '')); });
+      });
+      themeBtn.addEventListener('click', function () { dark = !dark; applyTheme(); });
+      document.getElementById('reload-btn').addEventListener('click', function () {
+        try { frame.contentWindow.location.reload(); }
+        catch (e) { frame.src = 'demo'; }
+      });
+      frame.addEventListener('load', applyTheme);
+      window.addEventListener('resize', fit);
+      setDevice('iphone-15');
+      fit();
+    })();
+  </script>
+</body>
+</html>
