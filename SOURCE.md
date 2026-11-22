@@ -31,3 +31,5 @@ A later phone-only presentation pass (22 November 2026) decluttered wheel and LE
 A later phone-only presentation pass (22 November 2026, round 2) hid PPD figures and earnings warning pills from the mobile UI, hid Fees on wheel and LEAP trade rows (fees remain in totals and data), and adjusted phone CSS so the card ⋯ button and “Called away” stepper label are not clipped at 390px. Calculation functions and stored values were not changed.
 
 A later phone CSS pass (22 November 2026, round 3) keeps the “Called away” stepper label on one line and the header price change on one line with the ticker at 390px.
+
+A later phone CSS pass (22 November 2026, round 4) tightens page and card side insets to ~8px from the screen edge on Home, Wheels and LEAPs, and keeps the Edit button visible on EXP trade rows.

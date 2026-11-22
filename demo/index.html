@@ -1350,6 +1350,46 @@ select,textarea,
   .wc.rot-mini-bar .rot-badge{flex-shrink:0;margin-left:0.15rem}
 }
 
+/* Phone: tight gutters — cards sit ~8px from the screen edge. */
+@media(max-width:700px){
+  #content{
+    padding-top:8px!important;
+    padding-left:max(8px, env(safe-area-inset-left))!important;
+    padding-right:max(8px, env(safe-area-inset-right))!important;
+  }
+  #topnav,#demo-banner{
+    padding-left:max(8px, env(safe-area-inset-left))!important;
+    padding-right:max(8px, env(safe-area-inset-right))!important;
+  }
+  .v2-bar .v2-copy,.v2-hero>.v2-copy{padding-left:8px!important;padding-right:8px!important}
+  .v2-hero .v2-strip,.v2-home .v2-strip,.v2-light .v2-strip,.v2-strip{padding-left:8px!important;padding-right:8px!important}
+  .hcard,.d-panel,.home-chart,.chart-card{margin-left:0;margin-right:0}
+  .mpl-table tr{padding-left:8px;padding-right:8px}
+
+  .wc>.rot-header{padding-left:8px!important;padding-right:8px!important}
+  .wc .wl-body{padding-left:8px;padding-right:8px}
+  .wc .wl-facts{padding:12px 8px}
+  .wc .wl-memo{margin-inline:0}
+  .wc .trade-body,.wc .trade-body.open{margin:0 8px 8px}
+  .wc.rot-mini-bar>.lc-h{padding:10px 8px}
+
+  .lcw>.lc-h{padding-left:8px;padding-right:8px}
+  .lcw>.wl-top{padding-left:8px;padding-right:8px}
+  .lcw>.lc-hero{margin:0 8px 10px;padding:10px 8px}
+  .lcw>.lc-bar{margin-left:8px;margin-right:8px}
+  .lcw>.wl-memo{margin-inline:8px}
+  .lcw>.trade-body{margin:0 8px 8px!important}
+
+  /* Keep Edit on screen even when an EXP chip is on the row */
+  .trow,.trow.has-to-strike,.wc .trade-body .trow.has-to-strike,.pmcc-open .tgrid>.trow.has-to-strike,.pmcc-trades .trow{
+    padding:0.6rem 0.5rem!important;
+  }
+  .tr-l1{gap:0.25rem 0.35rem;min-width:0}
+  .tr-cap{min-width:0;flex:1 1 auto}
+  .tr-edit{flex:0 0 auto;flex-shrink:0}
+  .tr-edit .btn{border-radius:6px}
+}
+
 
 
 </style>
