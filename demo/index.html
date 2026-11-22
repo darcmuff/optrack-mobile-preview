@@ -1185,6 +1185,10 @@ select,textarea,
 .v2-hero.v2-home .hk-grid > .hk[onclick]:active {
   border-color: #FF5A36;
 }
+.v2-hero.v2-home .hk-grid > .hk.hk-nx,
+.v2-hero.v2-home .hk-grid > .hk.hk-need {
+  cursor: pointer;
+}
 /* LEAP cards match wheel cards: no orange outline, expanded or collapsed. */
 .leap-card.lcw {
   border: 0 !important;
@@ -1524,6 +1528,66 @@ select,textarea,
   }
   .v2-home .hk-wl b{font-size:18px;line-height:1.2}
   .v2-home .hk-wl span{font-size:11px}
+
+  /* Phone Home P&L chart: 8px insets, compact header, range buttons on one row */
+  .home-chart:not(.pc-full){
+    padding:8px;
+    box-sizing:border-box;
+  }
+  .home-chart .pc-head{
+    flex-wrap:wrap;
+    align-items:flex-start;
+    gap:4px 8px;
+    margin-bottom:6px;
+  }
+  .home-chart .pc-head-main{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:baseline;
+    gap:2px 8px;
+    flex:1 1 100%;
+    min-width:0;
+  }
+  .home-chart .a-chart-title{
+    font-size:0.8125rem;
+    line-height:1.2;
+    margin:0;
+  }
+  .home-chart .pc-net{font-size:0.9375rem;line-height:1.2}
+  .home-chart .pc-sub{
+    flex:1 1 100%;
+    font-size:0.75rem;
+    line-height:1.25;
+    margin:0;
+  }
+  .home-chart .pc-btns{
+    margin-left:0;
+    flex:1 1 100%;
+    width:100%;
+    display:flex;
+    flex-wrap:nowrap;
+    align-items:stretch;
+    justify-content:flex-start;
+    gap:4px;
+    min-width:0;
+  }
+  .home-chart .pc-r{
+    flex:1 1 0;
+    min-width:0;
+    min-height:32px;
+    height:32px;
+    padding:0 2px;
+    box-sizing:border-box;
+    border-radius:6px;
+    font-size:12px;
+    font-weight:720;
+    line-height:1;
+    display:inline-flex;
+    align-items:center;
+    justify-content:center;
+    white-space:nowrap;
+  }
+  .home-chart .pc-fs{margin-left:0}
 }
 
 

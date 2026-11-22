@@ -39,3 +39,5 @@ A later phone CSS pass (22 November 2026, round 5) keeps the wheel stepper sub-l
 A later phone CSS and markup pass (22 November 2026, round 6) tidies the Home overview tiles: no outer card wrapper, a compact heading, a 2-column grid with Options P&L this month full width and the rest paired, sentence-case labels, and grey tile borders (orange only on Needs you when it has items).
 
 A later phone CSS pass (22 November 2026, round 7) darkens the Home tile outlines a step and turns the outline orange on clickable tiles while hovered (mouse) or pressed (touch). Needs you stays orange when it has items.
+
+A later phone CSS pass (22 November 2026, round 8) tightens the Home P&L chart card: 8px insets, a compact header, and all range buttons on one row at phone widths.
