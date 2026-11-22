@@ -1587,7 +1587,13 @@ select,textarea,
     justify-content:center;
     white-space:nowrap;
   }
-  .home-chart .pc-fs{margin-left:0}
+  .home-chart .pc-fs{display:none}
+
+  /* Line Monthly P&L / Shares & LEAPs titles up with the 8px row insets */
+  .d-panel:has(.mpl-table) .d-panel-hdr{
+    padding-left:8px;
+    padding-right:8px;
+  }
 }
 
 

@@ -41,3 +41,5 @@ A later phone CSS and markup pass (22 November 2026, round 6) tidies the Home ov
 A later phone CSS pass (22 November 2026, round 7) darkens the Home tile outlines a step and turns the outline orange on clickable tiles while hovered (mouse) or pressed (touch). Needs you stays orange when it has items.
 
 A later phone CSS pass (22 November 2026, round 8) tightens the Home P&L chart card: 8px insets, a compact header, and all range buttons on one row at phone widths.
+
+A later phone CSS pass (22 November 2026, round 9) hides the Home chart fullscreen button on phone and lines the Monthly P&L title up with the 8px row insets.
