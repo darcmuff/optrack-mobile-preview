@@ -992,7 +992,8 @@ body{background:var(--bg);color:var(--text);line-height:1.45}
 @media(max-width:700px){
   .wc-lgw{--s:.5}
   .wc-tk{font-size:6.5rem}
-  .wc>.rot-header{padding:0.875rem 0.875rem 0.25rem!important;flex-wrap:wrap}
+  .wc>.rot-header{padding:0.875rem 0.875rem 0.25rem!important;flex-wrap:nowrap;align-items:center;gap:0.4rem}
+  .wc>.rot-header .card-more{margin-left:auto}
   .wc .wl-body{padding:0.25rem 0.875rem 0.75rem}
   .wc .wl-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0.875rem 0.625rem;padding:0.875rem}
   .wc .wl-facts>.wl-f{text-align:left!important}
@@ -1114,7 +1115,7 @@ html:not([data-theme="dark"]) .hk-cog svg{fill:currentColor}
 .lcw>.lc-bar i{background:#FF5A36}
 .lcw>.trade-body{background:var(--bg2);color:var(--text);border:1px solid rgba(17,15,21,.08);border-radius:12px;margin:0 18px 18px!important;box-shadow:0 2px 4px rgba(17,15,21,.05)}
 .lcw .trade-body .btn{border-radius:6px;font-family:inherit}
-@media(max-width:700px){.lcw .wc-lgw{--s:.45}.lcw>.lc-h{padding:14px 14px 6px;flex-wrap:wrap;gap:0.4rem 0.5rem}.lcw>.wl-top{padding:0 14px 6px}.lcw>.lc-hero{grid-template-columns:1fr 1fr;margin:0 12px 12px;padding:12px}.lcw>.trade-body{margin:0 10px 10px!important}}
+@media(max-width:700px){.lcw .wc-lgw{--s:.45}.lcw>.lc-h{padding:14px 14px 6px;flex-wrap:nowrap;align-items:flex-start;gap:0.4rem 0.5rem}.lcw>.lc-h>div:first-child{min-width:0;flex:1}.lcw>.lc-h .lc-h-right{flex-shrink:0;align-self:flex-start;margin-left:auto}.lcw>.wl-top{padding:0 14px 6px}.lcw>.lc-hero{grid-template-columns:1fr 1fr;margin:0 12px 12px;padding:12px}.lcw>.trade-body{margin:0 10px 10px!important}}
 /* Called away (and the other wheel steps) at AA on every card gradient */
 .wc .wl-st{color:#fff}
 .wc .rot-earn{color:#fff;background:rgba(0,0,0,.16)}
@@ -3564,8 +3565,17 @@ function leapOptHtml(mark,prevClose,dayOpen){
   return `<span class="lc-opt" style="margin-left:0.75rem;font-size:0.84rem;font-weight:480"><span style="color:var(--text3);font-weight:480">Option</span> $${(+mark).toFixed(2)}${mv}</span>`;
 }
 function leapLogoHtml(sym,open){return rotNumHtml({ticker:sym,sortOrder:String(sym||'?').charAt(0)||'?'},open);}
+function quoteLiveBadge(sym,open){
+  // Presentation only: hide the Live pill when a non-delayed quote is present; show a status when not live.
+  if(!open)return`<span class="rot-badge closed">Closed</span>`;
+  const q=typeof quotes!=='undefined'?quotes[sym]:null;
+  if(q&&q.price>0&&q.state!=='DELAYED')return '';
+  if(typeof isPricePending==='function'&&isPricePending(sym))return '';
+  const label=(!q||!(q.price>0))?'No quote':'Delayed';
+  return`<span class="rot-badge closed">${label}</span>`;
+}
 function leapHeaderRightHtml(l,open,leapExp,gid){
-  const badge=open?`<span class="rot-badge open">● Live</span>`:`<span class="leap-badge cl">${esc(l.status)}</span>`;
+  const badge=open?quoteLiveBadge(l.underlying,true):`<span class="leap-badge cl">${esc(l.status)}</span>`;
   const acts=open
     ?`<span class="card-acts-inline"><span class="lc-lacts"><button class="btn btn-ghost btn-sm" onclick="openOptClose('${esc(gid)}','close')">Close</button><button class="btn btn-ghost btn-sm" onclick="openLeapEdit('${esc(l.id)}')">Edit</button></span></span>`
     :`<span class="card-acts-inline"><span class="lc-lacts"><button class="btn btn-ghost btn-sm" onclick="openLeapEdit('${esc(l.id)}')">Edit</button></span></span>`;
@@ -3607,7 +3617,7 @@ function renderLeapCard(l,spot,today){
     ${leapExp?`  ${note?`<div class="lc-note">${note}</div>`:''}
   <div class="lc-hero"><div><div class="lc-k">Value now</div><div class="lc-v">${S.value!=null?m0(S.value):'—'}</div></div>
     <div><div class="lc-k">Cost after calls ${ii(`Calls have paid back ${pb.pct}% of what you paid (${m0(Math.max(0,P.net))} of ${m0(P.cost)}). Cost after calls = what you paid minus the net from calls closed or expired against it. Open calls don't count until closed. The ▲/▼ % is vs what you paid.`)}</div><div class="lc-v lc-mut">${m0(P.adj)}${leapAdjMoveHtml(P.cost,P.adj)}</div></div>
-    <div><div class="lc-k">Unrealised ${ii('The LEAP\'s gain or loss at today\'s price, and as a % of what you paid for it. Calls sold against it are not included.')}</div><div class="lc-v sm ${S.pl==null?'':colorN(S.pl)}">${S.expired?'—':S.pl==null?'no mark':(S.pl>=0?'+':'')+m0(S.pl)}</div>${(()=>{const q=leapUnrealPct(S);return q==null?'':`<div class="lc-pct ${colorN(q)}" style="font-size:0.825rem;font-weight:720">${q>=0?'+':''}${q.toFixed(2)}%</div>`;})()}</div>
+    <div><div class="lc-k">Unrealised ${ii('The LEAP\'s gain or loss at today\'s price, and as a % of what you paid for it. Calls sold against it are not included.')}</div><div class="lc-v sm ${S.pl==null?'':colorN(S.pl)}">${S.expired?'—':S.pl==null?'no mark':(S.pl>=0?'+':'')+m0(S.pl)}</div></div>
     <div><div class="lc-k">Breakeven</div><div class="lc-v sm">$${S.be.toFixed(2)}</div></div></div>
   <div class="lc-bar"><i style="width:${pb.pct}%"></i></div>
   <div class="wl-memo" onclick="event.stopPropagation()"><button type="button" class="wl-wi-btn" onclick="event.stopPropagation();wlWhatIf('${esc(l.id)}')">What if?</button></div><div class="wl-wi" id="wi-${esc(l.id)}" hidden onclick="event.stopPropagation()" data-kind="leap" data-cost="${P.cost}" data-net="${P.net}" data-strike="${+l.strike||0}" data-qty="${S.q}"><button type="button" class="wl-wi-x" aria-label="Close" onclick="event.stopPropagation();wlWhatIfClose('${esc(l.id)}')">×</button><div class="wl-wi-in"><label>Strike<input data-wi="k" type="number" step="0.01" inputmode="decimal" placeholder="e.g. 260" oninput="wlWhatIfCalc('${esc(l.id)}')"></label><label>Premium / share<input data-wi="p" type="number" step="0.01" inputmode="decimal" placeholder="e.g. 3.00" oninput="wlWhatIfCalc('${esc(l.id)}')"></label></div><div data-wi="out"><div class="wl-wi-r"><span>New net cost</span><span class="wl-wi-v">—</span></div><div class="wl-wi-r"><span>Breakeven</span><span class="wl-wi-v">—</span></div></div><div class="wl-wi-act"><button type="button" class="btn btn-primary btn-sm" onclick="event.stopPropagation();wlWhatIfLog('${esc(l.id)}')">Log this trade</button></div></div>
@@ -3623,7 +3633,7 @@ function renderLeapCard(l,spot,today){
   ${leapExp?`${note?`<div class="lc-note">${note}</div>`:''}
   <div class="lc-hero"><div><div class="lc-k">Paid → closed</div><div class="lc-v">$${S.paid.toFixed(2)} → $${(+l.closePrice||0).toFixed(2)}</div></div>
     <div><div class="lc-k">Cost after calls ${ii(`Calls have paid back ${pb.pct}% of what you paid (${m0(Math.max(0,P.net))} of ${m0(P.cost)}). Cost after calls = what you paid minus the net from calls closed or expired against it. Open calls don't count until closed. The ▲/▼ % is vs what you paid.`)}</div><div class="lc-v lc-mut">${m0(P.adj)}${leapAdjMoveHtml(P.cost,P.adj)}</div></div>
-    <div><div class="lc-k">Realised ${ii('The LEAP\'s gain or loss when it closed or expired, and as a % of what you paid for it. Calls sold against it are not included.')}</div><div class="lc-v sm ${S.pl==null?'':colorN(S.pl)}">${S.pl==null?'—':(S.pl>=0?'+':'')+m0(S.pl)}</div>${rq==null?'':`<div class="lc-pct ${colorN(rq)}" style="font-size:0.825rem;font-weight:480">${rq>=0?'+':''}${rq.toFixed(2)}%</div>`}</div>
+    <div><div class="lc-k">Realised ${ii('The LEAP\'s gain or loss when it closed or expired, and as a % of what you paid for it. Calls sold against it are not included.')}</div><div class="lc-v sm ${S.pl==null?'':colorN(S.pl)}">${S.pl==null?'—':(S.pl>=0?'+':'')+m0(S.pl)}</div></div>
     <div><div class="lc-k">Opened</div><div class="lc-v sm">${_fdShort(l.entryDate)}</div></div></div>
   <div class="lc-bar"><i style="width:${pb.pct}%"></i></div>
   ${renderPmcc(l,today,spot)}
@@ -4516,7 +4526,7 @@ function renderRotationMini(wheel){
   const pnlH=`<span class="lc-spot" style="margin-left:0.75rem;font-size:0.84rem;font-weight:480"><span class="${colorN(m.realisedPnL)}">${fmtMoney(m.realisedPnL)}</span> <span style="color:var(--text3);font-weight:480">realised</span></span>`;
   return`<div class="rotation-window wc rot-mini-bar ${isOpen?'rot-open':'rot-closed'}" id="rw-${wheel.id}" data-ticker="${esc(wheel.ticker||'')}" style="--wc-bg:${wcBg(wheel.ticker)};${isHidden?'opacity:.5':''}">
     ${wcArtHtml(wheel.ticker)}
-    <div class="lc-h" style="cursor:pointer" onclick="toggleMinimise('${wheel.id}')"><div class="rot-mini-main"><span class="lc-arr" style="color:var(--text3);margin-right:0.25rem">▸</span>${rotNumHtml(wheel,isOpen)}<span class="rot-ticker ${isOpen?'':'cn'}">${esc(wheel.ticker||'—')}</span><span class="lc-ct">${esc(detail)}</span>${priceH}${pnlH}</div><span class="rot-badge ${isOpen?'open':'closed'}">${isOpen?'● Live':'Closed'}</span><span class="lc-lacts-wrap" onclick="event.stopPropagation()"><span class="lc-lacts"><button class="btn btn-ghost btn-sm" onclick="toggleStatus('${wheel.id}')">${isOpen?'Close':'Reopen'}</button><button class="btn btn-ghost btn-sm" onclick="openEditWheel('${wheel.id}')">Edit</button></span></span><details class="card-more" onclick="event.stopPropagation()"><summary class="card-more-sum" aria-label="More actions">⋯</summary><div class="card-more-menu"><button type="button" class="card-more-item" onclick="toggleStatus('${wheel.id}')">${isOpen?'Close':'Reopen'}</button><button type="button" class="card-more-item" onclick="openEditWheel('${wheel.id}')">Edit</button></div></details></div>
+    <div class="lc-h" style="cursor:pointer" onclick="toggleMinimise('${wheel.id}')"><div class="rot-mini-main"><span class="lc-arr" style="color:var(--text3);margin-right:0.25rem">▸</span>${rotNumHtml(wheel,isOpen)}<span class="rot-ticker ${isOpen?'':'cn'}">${esc(wheel.ticker||'—')}</span><span class="lc-ct">${esc(detail)}</span>${priceH}${pnlH}</div>${isOpen?quoteLiveBadge(wheel.ticker,true):`<span class="rot-badge closed">Closed</span>`}<span class="lc-lacts-wrap" onclick="event.stopPropagation()"><span class="lc-lacts"><button class="btn btn-ghost btn-sm" onclick="toggleStatus('${wheel.id}')">${isOpen?'Close':'Reopen'}</button><button class="btn btn-ghost btn-sm" onclick="openEditWheel('${wheel.id}')">Edit</button></span></span><details class="card-more" onclick="event.stopPropagation()"><summary class="card-more-sum" aria-label="More actions">⋯</summary><div class="card-more-menu"><button type="button" class="card-more-item" onclick="toggleStatus('${wheel.id}')">${isOpen?'Close':'Reopen'}</button><button type="button" class="card-more-item" onclick="openEditWheel('${wheel.id}')">Edit</button></div></details></div>
   </div>`;
 }
 
@@ -4978,8 +4988,6 @@ function renderRotationWindow(wheel){
   const _dateSpan=_firstDate?(isOpen?fmtMonYear(_firstDate)+' → Present':(_lastDate&&_lastDate!==_firstDate?fmtMonYear(_firstDate)+' → '+fmtMonYear(_lastDate):fmtMonYear(_firstDate))):'—';
   const _strike=openLegForDTE?.strike;
   const _pctToStrike=rawP!=null&&_strike?((_strike-rawP)/rawP*100):null; // move needed from current price to reach strike
-  const _pctCol='var(--silver)'; // neutral — sign shows which side of the strike; red/green was misleading for CCs
-  const _pctHtml=_pctToStrike!==null?`<span style="font-size:0.825rem;font-weight:480"><span style="color:${_pctCol}">${_pctToStrike>=0?'+':''}${_pctToStrike.toFixed(1)}%</span> <span style="font-size:0.75rem;font-weight:480;color:var(--silver)">To Strike</span></span>`:'';
   const _dteColor='var(--silver)';
   const dteBadge=activeDTE!==null
     ?`<span class="rot-dte-badge" style="color:${_dteColor};border-color:${_dteColor}">${activeDTEExpiry?fmtDateShort(activeDTEExpiry):''} (${activeDTE}d)</span>`
@@ -5026,12 +5034,12 @@ function renderRotationWindow(wheel){
   const _rss=rotationShareStats(wheel,db.trades,_priceOf);
   const _stage=wheelStage(m.sharesHeld,openPos?openPos.action:null,m.trades.some(t=>t.action==='OUT'));
   const _stepNames=['Put','Assigned','Call','Called away'];
-  const _steps=`<div class="wl-steps">${_stepNames.map((n,i)=>`<div class="wl-st${i<_stage?' d':i===_stage?' n':''}"><b></b><span class="wl-sl">${n}</span>${i===_stage&&openPos?`<span class="wl-leg">${openPos.action==='CSP'?'Put':'Call'} $${fmt2(openPos.strike).replace(/\.00$/,'')} · ${openPos.dte}d</span>`:''}</div>`).join('')}</div>`;
+  const _steps=`<div class="wl-steps">${_stepNames.map((n,i)=>`<div class="wl-st${i<_stage?' d':i===_stage?' n':''}"><b></b><span class="wl-sl">${n}</span>${i===_stage&&openPos?`<span class="wl-leg">${openPos.action==='CSP'?'Put':'Call'} $${fmt2(openPos.strike).replace(/\.00$/,'')} · ${openPos.dte}d${_pctToStrike!=null?` · ${_pctToStrike>=0?'+':''}${_pctToStrike.toFixed(1)}% to strike`:''}</span>`:''}</div>`).join('')}</div>`;
   const _fact=(l,v,c='')=>`<div class="wl-f"><span>${l}</span><b class="${c}">${v}</b></div>`;
   const _divs=m.trades.filter(t=>t.action==='DIV').reduce((a,t)=>a+(t.total||0),0);
   const _cs=wheelCardSummary({sharesHeld:m.sharesHeld,breakeven:m.breakeven,openShares:_rss.openShares,openCost:_rss.openCost,openPos,premiumNet:m.premiumRealised,sharesRealised:_rss.realised,divs:_divs,closed:!isOpen});
   const _f2=_cs.held
-    ?`<div class="wl-f wl-be"><span>Breakeven</span><b>$${fmt2(_cs.breakeven)}</b>${_cs.assignedAt!=null?`<small>Assigned at $${fmt2(_cs.assignedAt)}</small>`:''}</div>`
+    ?`<div class="wl-f wl-be"><span>Breakeven</span><b>$${fmt2(_cs.breakeven)}</b></div>`
     :_fact(cspCollateral?'Collateral':'Shares P&amp;L',cspCollateral?fmtMoney(cspCollateral).replace(/\.00$/,''):(_rss.realised?fmtMoney(_rss.realised):'—'),cspCollateral?'':colorN(_rss.realised));
   const _curOpt=isOpen?wheelCurrentOption(wheel.ticker,m.trades):null,_markKnown=!!(_curOpt&&Object.prototype.hasOwnProperty.call(_wheelMarks,_curOpt.occ));
   const _curVal=_markKnown&&_wheelMarks[_curOpt.occ]!=null?wheelCurrentValue(_curOpt,_wheelMarks[_curOpt.occ]):null;
@@ -5039,7 +5047,7 @@ function renderRotationWindow(wheel){
   const _curChain=wheelChainProfit(m.trades,_curOpt,_curVal);
   const _curPft=_curChain?_curChain.profit:wheelCurrentProfit(_curOpt,_curVal);
   if(_curChain)_curPct=_curChain.pct;
-  const _fCur=_curPft!=null&&_curPct!=null?`<div class="wl-f wl-cur"><span>Profit</span><b class="${_curPft>=0?'g':'r'}">${_curPft>=0?'+':'-'}${fmtMoney(Math.abs(_curPft))}</b><small class="${_curPct>=0?'g':'r'}">${_curPct>=0?'+':'-'}${Math.round(Math.abs(_curPct))}%</small></div>`:(_markKnown?`<div class="wl-f wl-cur"><span>Profit</span><b class="m">no quote</b></div>`:'');
+  const _fCur=_curPft!=null?`<div class="wl-f wl-cur"><span>Profit</span><b class="${_curPft>=0?'g':'r'}">${_curPft>=0?'+':'-'}${fmtMoney(Math.abs(_curPft))}</b></div>`:(_markKnown?`<div class="wl-f wl-cur"><span>Profit</span><b class="m">no quote</b></div>`:'');
   const _f3=m.sharesHeld>0
     ?_fact('Unrealised',_rss.unrealised==null?'no price':fmtMoney(_rss.unrealised),_rss.unrealised==null?'m':colorN(_rss.unrealised))
     :'';
@@ -5055,7 +5063,7 @@ function renderRotationWindow(wheel){
   // Part-covered shares: held minus shares under open covered calls (skipped if any call has no share count)
   const _idle=(()=>{if(_stage!==2||!isOpen||!(m.sharesHeld>0))return 0;const calls=openOptionLegs(m.trades).filter(o=>o.action==='STOC');if(!calls.length||calls.some(o=>!(o._rem>0)&&!Number(o.shares)))return 0;const cov=calls.reduce((a,o)=>a+(o._rem>0?o._rem:Number(o.shares)),0);return Math.max(0,m.sharesHeld-cov);})();
   const wheelCardBody=`<div class="wl-body">
-    <div class="wl-top"><span class="wl-stage">${_stage===0&&!openPos?(isOpen?'Waiting for a put':'Closed'):_stage===1?`Holding ${m.sharesHeld} shares · no call yet`:_stepNames[_stage]+(_stage===3?'':' open')+(_idle>0?` · ${_idle} shares idle`:'')}</span>${isOpen?(queueEarnings(wheel.ticker),`<span class="rot-earn-slot" data-sym="${esc(wheel.ticker||'')}" data-exps="${esc((isOpen?openOptionLegs(m.trades):[]).filter(o=>o.expiry).map(o=>o.expiry).join(','))}">${earningsBadge(wheel.ticker,(isOpen?openOptionLegs(m.trades):[]).map(o=>o.expiry).filter(Boolean))}</span>`):''}</div>
+    ${(()=>{const _stageLabel=_stage===0&&!openPos?(isOpen?'Waiting for a put':'Closed'):_stage===1?`Holding ${m.sharesHeld} shares · no call yet`:(_idle>0?`${_idle} shares idle`:'');const _earnHtml=isOpen?(queueEarnings(wheel.ticker),`<span class="rot-earn-slot" data-sym="${esc(wheel.ticker||'')}" data-exps="${esc((isOpen?openOptionLegs(m.trades):[]).filter(o=>o.expiry).map(o=>o.expiry).join(','))}">${earningsBadge(wheel.ticker,(isOpen?openOptionLegs(m.trades):[]).map(o=>o.expiry).filter(Boolean))}</span>`):'';return (_stageLabel||_earnHtml)?`<div class="wl-top">${_stageLabel?`<span class="wl-stage">${_stageLabel}</span>`:''}${_earnHtml}</div>`:'';})()}
     ${_steps}${_memo}
     <div class="wl-facts">${_f2}${_fCur}${_f3}${_fCall}${_fTot}${_fAroc}${_fPrem}${_fDays}</div>
   </div>`;
@@ -5118,8 +5126,7 @@ function renderRotationWindow(wheel){
       ${headerPriceHtml}
       <span class="rot-label">${_dateSpan}</span>
       <span class="rot-shares">${shares}</span>
-      ${_pctHtml}
-      <span class="rot-badge ${isOpen?'open':'closed'}">${isOpen?'● Live':'Closed'}</span>
+      ${isOpen?quoteLiveBadge(wheel.ticker,true):`<span class="rot-badge closed">Closed</span>`}
       <span class="card-acts-inline" onclick="event.stopPropagation()"><span class="lc-lacts"><button class="btn btn-ghost btn-sm" onclick="toggleStatus('${wheel.id}')">${isOpen?'Close':'Reopen'}</button><button class="btn btn-ghost btn-sm" onclick="openEditWheel('${wheel.id}')">Edit</button></span></span>
       ${posSortBy==='manual'?`<button class="rot-header-btn card-acts-inline" onclick="event.stopPropagation();moveWheel('${wheel.id}',-1)" title="Move up"><svg viewBox="0 0 256 256" fill="var(--orange)" style="width:1rem;height:1rem"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80a8,8,0,0,1,11.32-11.32L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z" transform="rotate(180 128 128)"/></svg></button>
       <button class="rot-header-btn card-acts-inline" onclick="event.stopPropagation();moveWheel('${wheel.id}',1)" title="Move down"><svg viewBox="0 0 256 256" fill="var(--orange)" style="width:1rem;height:1rem"><path d="M213.66,101.66l-80,80a8,8,0,0,1-11.32,0l-80-80a8,8,0,0,1,11.32-11.32L128,164.69l74.34-74.35a8,8,0,0,1,11.32,11.32Z"/></svg></button>`:``}
