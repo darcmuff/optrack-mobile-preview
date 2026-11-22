@@ -992,10 +992,13 @@ body{background:var(--bg);color:var(--text);line-height:1.45}
 @media(max-width:700px){
   .wc-lgw{--s:.5}
   .wc-tk{font-size:6.5rem}
-  .wc>.rot-header{padding:0.875rem 0.55rem 0.25rem!important;flex-wrap:nowrap;align-items:center;gap:0.3rem;min-width:0;box-sizing:border-box}
-  .wc>.rot-header .rot-header-price{min-width:0;flex-shrink:1}
+  .wc>.rot-header{padding:0.875rem 0.5rem 0.25rem!important;flex-wrap:nowrap;align-items:center;gap:0.2rem;min-width:0;box-sizing:border-box}
+  .wc>.rot-header .rot-header-price{flex-shrink:0;flex-direction:row!important;flex-wrap:nowrap;align-items:baseline;white-space:nowrap}
+  .wc>.rot-header .rot-header-price>span{white-space:nowrap;flex-shrink:0}
   .wc>.rot-header .card-more{margin-left:auto;margin-right:0;flex-shrink:0}
-  .wc .wl-body{padding:0.25rem 0.875rem 0.75rem}
+  .wc>.rot-header .card-more-sum{position:relative;min-width:32px;min-height:32px;width:32px;height:32px;font-size:1.15rem}
+  .wc>.rot-header .card-more-sum::after{content:'';position:absolute;left:50%;top:50%;width:44px;height:44px;transform:translate(-50%,-50%)}
+  .wc .wl-body{padding:0.25rem 0.65rem 0.75rem}
   .wc .wl-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0.875rem 0.625rem;padding:0.875rem}
   .wc .wl-facts>.wl-f{text-align:left!important}
   .wc .wl-facts>.wl-be{grid-column:1/-1}
@@ -1005,8 +1008,10 @@ body{background:var(--bg);color:var(--text);line-height:1.45}
 @media(max-width:480px){
   .wc .wl-facts{grid-template-columns:repeat(2,minmax(0,1fr))}
   .wc .wl-f>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .wc .wl-st{white-space:normal;min-width:0;overflow:visible}
-  .wc .wl-sl{white-space:normal;text-align:center;line-height:1.2;max-width:100%;overflow:visible}
+  .wc .wl-steps{overflow:visible}
+  .wc .wl-st{white-space:nowrap;font-size:0.64rem;min-width:0;overflow:visible}
+  .wc .wl-sl{white-space:nowrap;text-align:center;line-height:1.2;padding:1px 3px;overflow:visible}
+  .wc .wl-st:last-child .wl-sl{align-self:flex-end;text-align:right}
 }
 .wc-legal{margin:0.5rem 0 1.25rem;font-size:0.75rem;font-weight:480;color:var(--text3);line-height:1.45}
 .wc-legal a{color:var(--text3);text-underline-offset:2px}
