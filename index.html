@@ -992,8 +992,9 @@ body{background:var(--bg);color:var(--text);line-height:1.45}
 @media(max-width:700px){
   .wc-lgw{--s:.5}
   .wc-tk{font-size:6.5rem}
-  .wc>.rot-header{padding:0.875rem 0.875rem 0.25rem!important;flex-wrap:nowrap;align-items:center;gap:0.4rem}
-  .wc>.rot-header .card-more{margin-left:auto}
+  .wc>.rot-header{padding:0.875rem 0.55rem 0.25rem!important;flex-wrap:nowrap;align-items:center;gap:0.3rem;min-width:0;box-sizing:border-box}
+  .wc>.rot-header .rot-header-price{min-width:0;flex-shrink:1}
+  .wc>.rot-header .card-more{margin-left:auto;margin-right:0;flex-shrink:0}
   .wc .wl-body{padding:0.25rem 0.875rem 0.75rem}
   .wc .wl-facts{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:0.875rem 0.625rem;padding:0.875rem}
   .wc .wl-facts>.wl-f{text-align:left!important}
@@ -1004,7 +1005,8 @@ body{background:var(--bg);color:var(--text);line-height:1.45}
 @media(max-width:480px){
   .wc .wl-facts{grid-template-columns:repeat(2,minmax(0,1fr))}
   .wc .wl-f>span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .wc .wl-st{white-space:nowrap}
+  .wc .wl-st{white-space:normal;min-width:0;overflow:visible}
+  .wc .wl-sl{white-space:normal;text-align:center;line-height:1.2;max-width:100%;overflow:visible}
 }
 .wc-legal{margin:0.5rem 0 1.25rem;font-size:0.75rem;font-weight:480;color:var(--text3);line-height:1.45}
 .wc-legal a{color:var(--text3);text-underline-offset:2px}
@@ -1115,7 +1117,7 @@ html:not([data-theme="dark"]) .hk-cog svg{fill:currentColor}
 .lcw>.lc-bar i{background:#FF5A36}
 .lcw>.trade-body{background:var(--bg2);color:var(--text);border:1px solid rgba(17,15,21,.08);border-radius:12px;margin:0 18px 18px!important;box-shadow:0 2px 4px rgba(17,15,21,.05)}
 .lcw .trade-body .btn{border-radius:6px;font-family:inherit}
-@media(max-width:700px){.lcw .wc-lgw{--s:.45}.lcw>.lc-h{padding:14px 14px 6px;flex-wrap:nowrap;align-items:flex-start;gap:0.4rem 0.5rem}.lcw>.lc-h>div:first-child{min-width:0;flex:1}.lcw>.lc-h .lc-h-right{flex-shrink:0;align-self:flex-start;margin-left:auto}.lcw>.wl-top{padding:0 14px 6px}.lcw>.lc-hero{grid-template-columns:1fr 1fr;margin:0 12px 12px;padding:12px}.lcw>.trade-body{margin:0 10px 10px!important}}
+@media(max-width:700px){.lcw .wc-lgw{--s:.45}.lcw>.lc-h{padding:14px 8px 6px;flex-wrap:nowrap;align-items:flex-start;gap:0.4rem 0.35rem;min-width:0;box-sizing:border-box}.lcw>.lc-h>div:first-child{min-width:0;flex:1}.lcw>.lc-h .lc-h-right{flex-shrink:0;align-self:flex-start;margin-left:auto;margin-right:0}.lcw>.wl-top{padding:0 14px 6px}.lcw>.lc-hero{grid-template-columns:1fr 1fr;margin:0 12px 12px;padding:12px}.lcw>.trade-body{margin:0 10px 10px!important}}
 /* Called away (and the other wheel steps) at AA on every card gradient */
 .wc .wl-st{color:#fff}
 .wc .rot-earn{color:#fff;background:rgba(0,0,0,.16)}
@@ -1605,7 +1607,7 @@ select,textarea,
       <div class="fld"><label>Fees ($)</label><input id="tf-fees" type="number" step="0.01" value="0" oninput="autoCalcTotal()"></div>
       <div class="fld"><label>Total ($) <small style="color:#555">auto</small></label><input id="tf-total" type="number" step="0.01" readonly></div>
       <div class="fld"><label>DTE <small style="color:#555">auto</small></label><input id="tf-days" type="number" step="1" oninput="autoCalcPPD()"></div>
-      <div class="fld"><label>PPD ($) <small style="color:#555">auto</small></label><input id="tf-ppd" type="number" step="0.01" readonly></div>
+      <div class="fld" id="tg-ppd" style="display:none"><label>PPD ($) <small style="color:#555">auto</small></label><input id="tf-ppd" type="number" step="0.01" readonly></div>
       <div class="fld" style="grid-column:span 3"><label>Comment</label><textarea id="tf-comment" rows="1"></textarea></div>
       <div class="fld" style="grid-column:span 3;display:none" id="tg-created-at"><label>Date Added <small style="color:#555">auto</small></label><input id="tf-created-at" type="text" readonly style="color:var(--text3);background:var(--bg3);cursor:default"></div>
     </div>
@@ -3436,7 +3438,7 @@ function tradeRowPhoneCard(p){
   const cap=p.cap==null||p.cap===''?'—':p.cap;
   const warn=p.warn||'';
   const ts=nz(p.toStrike)?`<span class="tr-to">To strike ${p.toStrike}</span>`:'';
-  return`<div class="tr-card"><div class="tr-l1"><span class="tr-ab">${p.ab}${p.exp||''}</span><span class="tr-id">${p.id||'—'}</span><span class="tr-cap" style="color:${p.capColor||'var(--text3)'}">${cap}</span><span class="tr-edit">${p.edit||''}</span></div><div class="tr-l2"><span class="tr-dates">${p.entered||'—'} → ${p.expiry||'—'}</span><span class="tr-prem">${p.premium||'—'}</span></div><div class="tr-l3">${mid([nz(p.shares)?`<span>Shares ${p.shares}</span>`:'',nz(p.fees)?`<span>Fees ${p.fees}</span>`:'',p.total?`<span>Total ${p.total}</span>`:'',nz(p.ppd)?`<span>PPD ${p.ppd}</span>`:'',ts,warn])}</div></div>`;
+  return`<div class="tr-card"><div class="tr-l1"><span class="tr-ab">${p.ab}${p.exp||''}</span><span class="tr-id">${p.id||'—'}</span><span class="tr-cap" style="color:${p.capColor||'var(--text3)'}">${cap}</span><span class="tr-edit">${p.edit||''}</span></div><div class="tr-l2"><span class="tr-dates">${p.entered||'—'} → ${p.expiry||'—'}</span><span class="tr-prem">${p.premium||'—'}</span></div><div class="tr-l3">${mid([nz(p.shares)?`<span>Shares ${p.shares}</span>`:'',p.total?`<span>Total ${p.total}</span>`:'',ts,warn])}</div></div>`;
 }
 function renderPmccListRow(e,spot,today){
   const c=e.leg;
@@ -3599,7 +3601,8 @@ function leapEarnHtml(l){
   if(typeof queueEarnings==='function')queueEarnings(l.underlying);
   if(typeof queueDividend==='function')queueDividend(l.underlying);
   const exps=shorts.map(s=>s.expiry);
-  return`<span class="rot-earn-slot" data-sym="${esc(l.underlying)}" data-exps="${esc(exps.join(','))}">${typeof earningsBadge==='function'?earningsBadge(l.underlying,exps):''}</span>`;
+  // Mobile UI: earnings warning pills are not shown.
+  return '';
 }
 function renderLeapCard(l,spot,today){
   const S=leapStats(l,spot,today),open=l.status==='open';
@@ -4874,7 +4877,8 @@ function earningsBadge(sym,openExpiries){
   if(n==null||n<0||n>14)return'';
   const before=Array.isArray(openExpiries)&&openExpiries.some(exp=>earningsBeforeExpiry(e.date,exp,today));
   const when=n===0?'today':n===1?'tomorrow':'in '+n+'d';
-  return`<span class="rot-earn" title="Next earnings ${esc(e.date)}${before?' — falls before an open option expires':''}">● Earnings ${when}${before?' · before expiry':''}</span>`;
+  // Mobile UI: do not render the earnings warning pill. Logic left intact.
+  return '';
 }
 function shortRowWarnInner(sym,opts){
   opts=opts||{};
@@ -4883,7 +4887,8 @@ function shortRowWarnInner(sym,opts){
   if(!sym||!expiry)return'';
   let html='';
   const e=_earn[sym];
-  if(e&&e.date&&earningsBeforeExpiry(e.date,expiry,today)){
+  // Mobile UI: earnings warning chips are not shown. Ex-div / early-assignment tags stay.
+  if(false&&e&&e.date&&earningsBeforeExpiry(e.date,expiry,today)){
     html+=`<span class="row-tag" title="Earnings fall before this option expires">Earnings ${fmtDayMon(e.date)}</span>`;
   }
   if(opts.isCall){
@@ -5063,7 +5068,7 @@ function renderRotationWindow(wheel){
   // Part-covered shares: held minus shares under open covered calls (skipped if any call has no share count)
   const _idle=(()=>{if(_stage!==2||!isOpen||!(m.sharesHeld>0))return 0;const calls=openOptionLegs(m.trades).filter(o=>o.action==='STOC');if(!calls.length||calls.some(o=>!(o._rem>0)&&!Number(o.shares)))return 0;const cov=calls.reduce((a,o)=>a+(o._rem>0?o._rem:Number(o.shares)),0);return Math.max(0,m.sharesHeld-cov);})();
   const wheelCardBody=`<div class="wl-body">
-    ${(()=>{const _stageLabel=_stage===0&&!openPos?(isOpen?'Waiting for a put':'Closed'):_stage===1?`Holding ${m.sharesHeld} shares · no call yet`:(_idle>0?`${_idle} shares idle`:'');const _earnHtml=isOpen?(queueEarnings(wheel.ticker),`<span class="rot-earn-slot" data-sym="${esc(wheel.ticker||'')}" data-exps="${esc((isOpen?openOptionLegs(m.trades):[]).filter(o=>o.expiry).map(o=>o.expiry).join(','))}">${earningsBadge(wheel.ticker,(isOpen?openOptionLegs(m.trades):[]).map(o=>o.expiry).filter(Boolean))}</span>`):'';return (_stageLabel||_earnHtml)?`<div class="wl-top">${_stageLabel?`<span class="wl-stage">${_stageLabel}</span>`:''}${_earnHtml}</div>`:'';})()}
+    ${(()=>{const _stageLabel=_stage===0&&!openPos?(isOpen?'Waiting for a put':'Closed'):_stage===1?`Holding ${m.sharesHeld} shares · no call yet`:(_idle>0?`${_idle} shares idle`:'');return _stageLabel?`<div class="wl-top"><span class="wl-stage">${_stageLabel}</span></div>`:'';})()}
     ${_steps}${_memo}
     <div class="wl-facts">${_f2}${_fCur}${_f3}${_fCall}${_fTot}${_fAroc}${_fPrem}${_fDays}</div>
   </div>`;
@@ -5092,10 +5097,8 @@ function renderRotationWindow(wheel){
       ${rotCapDeployed>0?`<div class="rmb-sub" style="font-size:0.825rem;color:var(--silver);margin-top:0.1875rem">Deployed: <span style="color:var(--orange)">${fmtMoney(rotCapDeployed)}</span></div>`:''}
     </div>
     <div class="rmb-col">
-      <div class="rmb-lbl">Avg PPD</div>
-      <div class="rmb-val">${ppdHtml}</div>
-      <div class="rmb-sub">${totalOptDays} option-days</div>
-      ${rotPPD!=null?`<div class="rmb-sub" style="font-size:0.825rem;color:var(--silver);margin-top:0.1875rem">Per week: <span style="color:var(--orange)">${rotPPD>=0?'$'+fmt2(rotPPD*7):'-$'+fmt2(Math.abs(rotPPD*7))}</span></div>`:''}
+      <div class="rmb-lbl">Option-days</div>
+      <div class="rmb-val">${totalOptDays||'—'}</div>
     </div>
     <div class="rmb-col">
       <div class="rmb-lbl">Open Leg</div>
@@ -7534,7 +7537,6 @@ function renderAnalytics(){
     <td style="font-weight:720;color:var(--silver)">${label}</td>
     <td>${d.count}</td>
     <td class="g">${fmtMoney(d.totalPrem)}</td>
-    <td style="color:var(--orange)">${fmtMoney(d.avgPPD)}/d</td>
     <td style="color:${d.avgROC!=null?(d.avgROC>=15?'var(--green)':d.avgROC>=8?'var(--orange)':'var(--text2)'):'var(--text3)'}">${d.avgROC!=null?d.avgROC.toFixed(1)+'%':'—'}</td>
   </tr>`).join('');
 
@@ -7571,7 +7573,6 @@ function renderAnalytics(){
         <div><span class="t3-xs">Trades</span><div class="fw5">${cspTrades.length}</div></div>
         <div><span class="t3-xs">Total Premium</span><div class="g fw5">${fmtMoney(cspTotal)}</div></div>
         <div><span class="t3-xs">Avg DTE</span><div class="fw5">${cspAvgDTE?cspAvgDTE.toFixed(0)+'d':'—'}</div></div>
-        <div><span class="t3-xs">Avg PPD</span><div style="font-weight:720;color:var(--orange)">${fmtMoney(timing.avgCspPPD)}</div></div>
       </div>
     </div>
     <div class="a-chart-box">
@@ -7580,7 +7581,6 @@ function renderAnalytics(){
         <div><span class="t3-xs">Trades</span><div class="fw5">${ccTrades.length}</div></div>
         <div><span class="t3-xs">Total Premium</span><div class="g fw5">${fmtMoney(ccTotal)}</div></div>
         <div><span class="t3-xs">Avg DTE</span><div class="fw5">${ccAvgDTE?ccAvgDTE.toFixed(0)+'d':'—'}</div></div>
-        <div><span class="t3-xs">Avg PPD</span><div style="font-weight:720;color:var(--orange)">${fmtMoney(timing.avgStocPPD)}</div></div>
       </div>
     </div>
   </div>`;
@@ -7654,7 +7654,7 @@ function renderAnalytics(){
       <div class="d-grid d-grid-2" style="gap:0.75rem">
         <div class="a-chart-box">
           <div class="a-chart-title">Performance by DTE Range</div>
-          <table class="a-table"><thead><tr><th>DTE</th><th>Trades</th><th>Total</th><th>Avg PPD</th><th>Avg AROC</th></tr></thead><tbody>${dteRows}</tbody></table>
+          <table class="a-table"><thead><tr><th>DTE</th><th>Trades</th><th>Total</th><th>Avg AROC</th></tr></thead><tbody>${dteRows}</tbody></table>
         </div>
         ${deltaTableRows?`<div class="a-chart-box">
           <div class="a-chart-title">Performance by Delta</div>
@@ -7664,7 +7664,6 @@ function renderAnalytics(){
       <div class="a-stat-grid" style="margin-top:0.625rem">
         ${stat(timing.totalOptDays+'d','Total Option-Days','cumulative risk exposure','var(--text2)','Sum of DTE across every option opened. Your total time exposure to the market.')}
         ${stat(fmtMoney(avgTradeSize),'Avg Leg Size','per option opened','var(--text2)','Average premium collected each time you open a new option position.')}
-        ${stat(bw.bestPPD?fmtMoney(bw.bestPPD.total/bw.bestPPD.days)+'/d':'—','Best PPD Trade',bw.bestPPD?bw.bestPPD.action+' · '+bw.bestPPD.days+'d':'','var(--green)','Single option trade with the highest Premium Per Day — your most capital-efficient trade.')}
         ${stat(bw.biggestBTC?fmtMoney(bw.biggestBTC.total):'—','Biggest BTC',bw.biggestBTC?fmtDate(bw.biggestBTC.entered):'','var(--red)','Most expensive single buyback. Large BTCs eat into premium — track these to improve roll timing.')}
       </div>
     ${stratTable}
@@ -8197,7 +8196,6 @@ function showPastePreview(p){
         <div><div class="mini-lbl">DTE</div><div class="fs-sm">${p.days!=null?p.days+'d':'—'}</div></div>
         <div><div class="mini-lbl">Premium</div><div class="fs-sm">$${(p.premium||0).toFixed(4)}</div></div>
         <div><div class="mini-lbl">Shares</div><div class="fs-sm">${p.shares||'—'}</div></div>
-        <div><div class="mini-lbl">Fees</div><div class="fs-sm">$${(p.fees||0).toFixed(2)}</div></div>
       </div>
     </div>
     <div class="fld"><label>Assign to wheel</label>${wheelHtml}</div>`;

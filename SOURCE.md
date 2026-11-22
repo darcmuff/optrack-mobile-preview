@@ -27,3 +27,5 @@ Do not copy later WheelHouse changes back without recording the new source commi
 A later phone-only layout pass (22 November 2026) added stacked trade cards at ≤700px for wheels and LEAPs, and two-line Monthly P&L / P&L by ticker rows. Desktop tables are unchanged above 700px. Still no financial formula, parser or business-logic changes.
 
 A later phone-only presentation pass (22 November 2026) decluttered wheel and LEAP cards: dropped the redundant stage label, moved to-strike into the stepper sub-label, hid the Live pill when quotes are live, and removed the Profit % and “Assigned at” sub-lines. No financial formulas, parsers or business logic were changed, and the source WheelHouse commit is still eb757f5.
+
+A later phone-only presentation pass (22 November 2026, round 2) hid PPD figures and earnings warning pills from the mobile UI, hid Fees on wheel and LEAP trade rows (fees remain in totals and data), and adjusted phone CSS so the card ⋯ button and “Called away” stepper label are not clipped at 390px. Calculation functions and stored values were not changed.
